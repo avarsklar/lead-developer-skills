@@ -4,7 +4,7 @@ A kit of nine plain-English skills that turn the AI you already use into a **car
 
 You don't become a developer. You become the person who approves each step. The AI does the typing; a way back stays ready the whole time.
 
-**New here? Read the guide first:** *Scared to Touch It — A Builder's Field Guide.* It explains the whole idea in plain words, with pictures and a short video for each skill.
+**New here? Read the guide first:** *the Lead Developer Hardening Handbook.* It explains the whole idea in plain words, with pictures and a short video for each skill.
 
 ## The nine skills, in order
 
