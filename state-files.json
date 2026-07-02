@@ -1,0 +1,137 @@
+{
+  "_comment": "Machine-checkable handshake manifest for the Lead Developer skills. The authoritative source for check_handshakes.py. Every cross-skill state-file token is listed with the skills that WRITE it and the skills that READ it, plus a `grep` string that must literally appear in each of those skills' SKILL.md. The linter fails if: a token has no writer; a token has a reader-less write that isn't on the intentional allowlist; a declared writer/reader doesn't actually mention the token (drift); or a dual-owner seam has no first_owner. Keep this in sync with STATE-FILES.md. Built 2026-07-02 from the 26-agent handshake map.",
+
+  "skills": ["readiness-check", "safety-net", "ship-change", "qa-harness", "go-live-check", "emergency-plan", "release-foundation", "release", "handoff"],
+
+  "tokens": [
+    { "id": "canonical_repo", "grep": "canonical_repo",
+      "writers": ["readiness-check", "safety-net", "ship-change", "qa-harness", "go-live-check", "emergency-plan", "release-foundation", "release", "handoff"],
+      "readers": ["readiness-check", "safety-net", "ship-change", "qa-harness", "go-live-check", "emergency-plan", "release-foundation", "release", "handoff"],
+      "note": "Every skill locks onto the live copy first; all carry a write-if-missing fallback. First owner: readiness-check." },
+
+    { "id": "deployed_branch", "grep": "deployed_branch",
+      "writers": ["readiness-check"],
+      "readers": ["ship-change", "release"],
+      "note": "M2 fix: which branch is production (not assumed `main`). readiness-check records; ship-change + release publish to it." },
+
+    { "id": "logins-and-data", "grep": "Logins & data",
+      "writers": ["readiness-check"],
+      "readers": ["go-live-check", "emergency-plan", "handoff"],
+      "note": "The `## Logins & data` inventory in stack.md. go-live-check scopes its pillars off it; emergency-plan derives the break-list; handoff seeds the treasure hunt." },
+
+    { "id": "operating-mode", "grep": "operating mode",
+      "writers": ["readiness-check"],
+      "readers": ["qa-harness", "go-live-check"],
+      "note": "The crossroad/closed-shop mode + lever back to normal. ship-change consumes it too but via `display mode` wording." },
+
+    { "id": "restore-test", "grep": "restore-test.md",
+      "writers": ["safety-net"],
+      "readers": ["readiness-check", "go-live-check", "emergency-plan", "handoff"],
+      "note": "Witnessed-restore proof. go-live-check re-proves under real data; emergency-plan/handoff carry the proof forward." },
+
+    { "id": "password-manager", "grep": "password manager",
+      "writers": ["safety-net"],
+      "readers": ["handoff"],
+      "note": "H1 fix: safety-net sets up a place to keep the keys; handoff assembles against it (map-not-vault)." },
+
+    { "id": "still-open-ledger", "grep": "Still open",
+      "writers": ["safety-net"],
+      "readers": ["readiness-check", "ship-change", "qa-harness", "go-live-check", "release-foundation", "release", "handoff"],
+      "note": "safety-net.md's dated deferral ledger, 🔴 first. Re-surfaced by every downstream skill. (go-live-check also keeps its own Still-open ledger.)" },
+
+    { "id": "local_sandbox", "grep": "local_sandbox",
+      "writers": ["ship-change"],
+      "readers": ["qa-harness", "emergency-plan", "release-foundation"],
+      "note": "staging.md marker: is the practice copy up. Gate for qa-harness / emergency-plan Part 2 / the release-foundation felt lap." },
+
+    { "id": "must_not_break_list", "grep": "must-not-break",
+      "writers": ["ship-change", "qa-harness"],
+      "readers": ["qa-harness", "go-live-check", "release"],
+      "seam_first_owner": "ship-change",
+      "note": "Seam: ship-change owns/captures it; qa-harness appends; go-live-check may fallback-capture (B12 — should write back to staging.md)." },
+
+    { "id": "versions.md", "grep": "versions.md",
+      "writers": ["ship-change"],
+      "readers": ["qa-harness", "release-foundation", "release", "handoff"],
+      "note": "The plain-English version log + rollback entries. qa-harness now reads it for the regression intake (H2)." },
+
+    { "id": "qa-harness-checks", "grep": "qa-harness.md",
+      "writers": ["qa-harness"],
+      "readers": ["ship-change", "go-live-check", "emergency-plan", "release-foundation", "release", "handoff"],
+      "note": "Proven checks + testability class + re-prove trigger + regression-covered stamps." },
+
+    { "id": "regression-wanted", "grep": "regression-wanted",
+      "writers": ["emergency-plan", "release", "go-live-check"],
+      "readers": ["qa-harness"],
+      "note": "H2 + B16 fix: producers flag a break to become a permanent check; qa-harness's Step 0.4 intake ingests it and flips it to regression-covered." },
+
+    { "id": "regression-covered", "grep": "regression-covered",
+      "writers": ["qa-harness"],
+      "readers": ["qa-harness", "emergency-plan", "release", "go-live-check"],
+      "note": "The closed state of the loop. qa-harness writes it into the source file + its own row; producers' Step-0.4 scan skips it." },
+
+    { "id": "part-2-due", "grep": "part-2-due",
+      "writers": ["emergency-plan"],
+      "readers": ["readiness-check", "ship-change"],
+      "note": "H3 fix: emergency-plan defers Part 2 with a dated tripwire; readiness-check (warm re-run) + ship-change (step zero) surface it stale." },
+
+    { "id": "next-review-due", "grep": "next-review-due",
+      "writers": ["emergency-plan"],
+      "readers": ["readiness-check", "ship-change"],
+      "note": "H3 fix: emergency-plan's staleness date; surfaced by readiness-check + ship-change." },
+
+    { "id": "next-check-due", "grep": "next check due",
+      "writers": ["go-live-check"],
+      "readers": ["readiness-check", "ship-change"],
+      "note": "H3 fix: go-live-check's monitors-rot tripwire; surfaced by readiness-check + ship-change." },
+
+    { "id": "future-releases", "grep": "future-releases.md",
+      "writers": ["ship-change", "release-foundation", "release"],
+      "readers": ["readiness-check", "release-foundation", "release"],
+      "seam_first_owner": "release-foundation",
+      "note": "Seam: release-foundation creates the chart; ship-change adds parked-feature rows; release marks shipped / rolls dates." },
+
+    { "id": "CHANGELOG", "grep": "CHANGELOG.md",
+      "writers": ["release-foundation", "release"],
+      "readers": ["release-foundation", "release", "handoff"],
+      "seam_first_owner": "release-foundation",
+      "note": "Seam: release-foundation creates; release appends; either adopts-not-clobbers an existing one. handoff bundles it." },
+
+    { "id": "break-glass-card", "grep": "the-break-glass-card.pdf",
+      "writers": ["emergency-plan"],
+      "readers": ["handoff"],
+      "note": "The derived emergency card PDF; handoff folds it into the recover section + first-day guide." },
+
+    { "id": "emergency-plan-md", "grep": "emergency-plan.md",
+      "writers": ["emergency-plan"],
+      "readers": ["qa-harness", "handoff"],
+      "note": "break-list / contact tree / run-history. qa-harness reads it for the regression intake (H2); handoff assembles it." },
+
+    { "id": "go-live-check-md", "grep": "go-live-check.md",
+      "writers": ["go-live-check"],
+      "readers": ["emergency-plan", "qa-harness"],
+      "note": "verdict + builder-confirmed proofs + wired alarms + regression-wanted. emergency-plan checks wired alarms before duplicating; qa-harness reads regression-wanted. (handoff reaches go-live status transitively via emergency-plan.md, not by reading go-live-check.md directly.)" }
+  ],
+
+  "intentional_write_no_read": [
+    { "id": "claude-md-never-hardcode-secrets", "writer": "safety-net", "reason": "Read by the builder's ambient AI every session, not by a sibling skill. That IS the intended reader." },
+    { "id": "claude-md-release-sorter", "writer": "release-foundation", "reason": "AI-memory rule for the everyday assistant; load-bearing mechanism is the reminder + chart." },
+    { "id": "claude-md-fire-mode-leash", "writer": "emergency-plan", "reason": "AI-memory contract for a plain-chat panic session; handoff carries the leash via the PDF card, not this file (B3 refuted)." },
+    { "id": "claude-md-ship-change-standing-rule", "writer": "ship-change", "reason": "AI-memory rule (every change through the loop); ambient AI is the reader." },
+    { "id": "handoff-md-clean-break-record", "writer": "handoff", "reason": "Terminal capstone record; nothing downstream by design." },
+    { "id": "handoff-packet-pdf", "writer": "handoff", "reason": "Terminal deliverable for a human operator with no repo access." },
+    { "id": "safety-net-size-tripwire", "writer": "safety-net", "reason": "Builder-facing future-task note in the cheat sheet." },
+    { "id": "qa-harness-test-key-option", "writer": "qa-harness", "reason": "Builder-facing 'door left open' upgrade note." },
+    { "id": "staging-data_fill", "writer": "ship-change", "reason": "Human-facing record; qa-harness re-derives realistic state from stack.md operating-mode (B4 — acceptable)." }
+  ],
+
+  "seams": [
+    { "concept": "CHANGELOG.md creation", "owners": ["release-foundation", "release"], "first_owner": "release-foundation", "rule": "release-foundation creates; release appends; whichever finds an existing one adopts-and-appends, never recreates." },
+    { "concept": "must_not_break_list", "owners": ["ship-change", "qa-harness", "go-live-check"], "first_owner": "ship-change", "rule": "ship-change is the single source of truth; qa-harness appends named flows; go-live-check's fallback-capture should write back to staging.md, not diverge (B12)." },
+    { "concept": "the down-alarm / uptime alert", "owners": ["go-live-check", "emergency-plan"], "first_owner": "go-live-check", "rule": "go-live-check owns/wires it; emergency-plan Part-2c checks go-live-check.md first and does not duplicate; records back as wired+proven." },
+    { "concept": "the in-app banner", "owners": ["emergency-plan", "ship-change"], "first_owner": "emergency-plan", "rule": "emergency-plan authors it; it ships through ship-change's loop and advances ship-change's restore point. Authorship = emergency-plan; publish side-effect = ship-change." },
+    { "concept": "the checkout / money-path proof", "owners": ["go-live-check", "qa-harness"], "first_owner": "go-live-check", "rule": "go-live-check proves it once, now; qa-harness makes it a permanent test. A go-live FAIL seeds a qa-harness test via a regression-wanted line (B16)." },
+    { "concept": "future-releases.md chart", "owners": ["release-foundation", "ship-change", "release"], "first_owner": "release-foundation", "rule": "release-foundation creates; ship-change adds parked rows; release marks shipped / rolls dates." },
+    { "concept": "stack.md ownership", "owners": ["readiness-check", "safety-net"], "first_owner": "readiness-check", "rule": "readiness-check owns it; safety-net only writes it as a fallback when the front door was skipped." }
+  ]
+}

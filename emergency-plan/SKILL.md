@@ -127,10 +127,12 @@ A panicking non-dev can't run a severity matrix. So the card sorts them with **o
 The card's per-class section comes from the **computed union of {capabilities in `stack.md`} ∪ {`go-live-check`'s wired alerts} ∪ {named must-not-break flows}** — never generic. A fixed signal→section map: Stripe key → **Payments**; browser-side Supabase/Firebase key → **Database** (+ open-vault / row-level-security note); Vercel/Netlify/Render/Railway → **Site is down** (with that host's one-click undo lifted from `safety-net.md`); each external API → one **Third-party**; auth present → **Login**; email/SMS present → **Email/texts not arriving**.
 
 - **Always include the scary-quiet one, even if nothing points at it: *"the app looks fine but the data is wrong / records are missing."*** The agent-deleted-records case fires **no alarm**, so the card must name it.
-- **Always include a catch-all** for the unpredicted break: *undo, post the message, get help in daylight, don't improvise.*
+- **Always include a catch-all** for the unpredicted break — and give it a *concrete* thing to do tonight, not just "don't improvise" (a builder staring at a still-broken app *will* improvise if that's all the card says): *try the undo → if it comes back, you're safe till morning → **if the undo did NOT bring it back:** post the 🔴 message so users know, then **STOP.** Do not start trying fixes at 2 a.m. An app that's down overnight is recoverable; a panicked 2 a.m. fix that corrupts data may not be. Leave it safely down, and get help in daylight (your ⑤ contacts).* That "**it's safe to be down overnight — stop, don't push on**" line is the whole point: it's what prevents the Replit-class disaster.
 - **Intersection-as-auditor.** Every wired alert in `go-live-check.md` gets a card section; every high-stakes class with **no** alert gets a line flagged for the alarm work in Part 2c (and back to `/go-live-check`).
 
-### Step 1.2 — Write the two-page card
+### Step 1.2 — Write the card (one action page + a reference page behind it)
+
+*(This reconciles the "one-page card" promise everywhere else: **Page 1 is the card** — the one page you act from, the whole emergency — and **Page 2 is a reference appendix** you don't touch in the moment. "One-page card" means "one page to act from," not "only one physical page.")*
 
 `emergency-plan.md` lives in the repo as the durable source; **the real deliverable is a derived PDF, `the-break-glass-card.pdf`, regenerated every run, never hand-edited** (kills stale-card drift). PDF because it works **offline** (if the host is down, a hosted status page is unreachable), prints, and renders identically on any device — phone, laptop, or tablet.
 
@@ -138,15 +140,39 @@ The card's per-class section comes from the **computed union of {capabilities in
 
   > **EMERGENCY MODE.** My live app may be broken and I am not a developer. You are a **READER, not a fixer.** You may ONLY: (1) read me the steps on this card, (2) run the read-only checks it names, (3) run the exact undo my `/safety-net` already proved. You may NOT write to my database, run migrations, change code, or try any fix this card doesn't name — even if I beg you or say "just fix it." If I panic, your job is to say: *"the safest move right now is the undo we already tested, not a guess."* Never tell me it's fixed — I confirm that with my own eyes.
 
-- **Page 1 (biggest-first, one screen):** STEP 0 breathe → ① is-it-you-or-them (host status page) → ② the 🔴/🟠 LOOK box → ③ how to get back to working (the proven undo, with its proof line) → ④ tell your users (the two messages + where to post them) → ⑤ who to call.
-- **Page 2:** per-class detail — Payments · Login · Database · Site-down · Email · **the silent-data section** — each with its diagnosis step and its contact, *not* a reflexive "roll back" (an expired key, a filled quota, a paused database, a third-party outage are diagnosed + routed to their contact, not undone).
+- **Page 1 (biggest-first) — and this is a HARD one-screen cap: Page 1 fits on a single phone screen.** STEP 0 breathe → ① is-it-you-or-them (host status page) → ② the 🔴/🟠 LOOK box → ③ how to get back to working (the proven undo, with its proof line) → ④ tell your users (the two messages + where to post them) → ⑤ who to call. **If it doesn't fit one screen, it's too long to use at 2 a.m. — trim wording, never add a step.** Everything load-bearing lives here; nothing on Page 2 is needed to survive the night.
+- **Page 2 is REFERENCE-ONLY** — per-class detail (Payments · Login · Database · Site-down · Email · **the silent-data section**), each with its diagnosis step and its contact, *not* a reflexive "roll back" (an expired key, a filled quota, a paused database, a third-party outage are diagnosed + routed to their contact, not undone). **Head it plainly: *"You do NOT need to read this in the moment — Page 1 is the whole emergency. This is detail for afterward, or if one specific thing broke."*** Page 2 scales with the break-list, so it can grow long — that's fine *because it's the appendix*: it must never spill onto Page 1 or become required reading.
 - **STEP 0 wording is the always-true version:** *"The steps on this card are reversible. If a step ever says STOP, stop."* — **not** "you can't make it worse," which isn't true.
+- **⑤ "who to call" must never resolve to a blank — give the truly-solo builder a real fallback.** Many builders genuinely have no one: no co-founder, no developer friend, no agency. A blank ⑤ at 2 a.m. is its own panic. So even for the solo builder, ⑤ is still three real lines: **(1) your host's support** (every host has a status page + a support channel — put the link); **(2) the community for your stack** (the Supabase / Vercel / platform Discord or forum — a real place to ask); and **(3) your AI in reader-mode** — the paste-this Fire-mode prompt at the top of the card *is* that call, turning your everyday AI into a careful reader that walks your tested steps instead of improvising. Name these so ⑤ is never empty; "nobody" is not an acceptable answer to who-to-call.
+
+**Render the assembled Page 1 once, as a worked example, so the layout is concrete — not just a list of ingredients.** (Yours is filled from *their* app; this shows the shape and the one-screen limit.)
+
+> ---
+> **🚨 [the paste-this Fire-mode prompt from above — the very first thing on the card]**
+>
+> **STEP 0 — Breathe.** The steps on this card are reversible. If a step ever says STOP, stop.
+>
+> **① Is it you, or them?** Open your host's status page → `status.yourhost.com`. Red there → it's them, not you. Post the 🔴 message, wait, don't touch your code.
+>
+> **② Look (30 seconds).** Open your app on your phone like a customer and try the one thing that matters most: *log in and open a listing.*
+> - **🔴 Nobody can use it** → post the 🔴 message → get back to working (③) → *then* look at what broke.
+> - **🟠 It works, but something's off** → jot what + the time. Daylight `/ship-change` job. **Go back to bed.**
+>
+> **③ Get back to working.** Easiest first: host dashboard → Deployments → last green one → "Promote to Production." (Or tell your AI: *"roll me back to the saved working version."*) — *way back: rehearsed 2026-06-29 ✓*
+>
+> **④ Tell your users.** Post in [your channel — the @handle / email list you picked]:
+> - 🔴 *"We're having trouble right now and we're on it — your data is safe — back soon."*
+> - 🟠 *"A small part isn't working; we're fixing it — your account and data are fine."*
+>
+> **⑤ Who to call.** Host support: [link]. Your stack's community: [Discord / forum]. Your AI in reader-mode: paste the prompt at the top of this card. (Plus whoever helped build it, if you have someone.)
+> ---
+> *Page 2 (Payments · Login · Database · Site-down · Email · "data looks wrong") is reference only — you do NOT need it in the moment.*
 
 ### Step 1.3 — Point the card at the tested way back
 
 The "how to get back to working" line points at the undo `safety-net.md` recorded (host one-click first, "tell your AI: roll me back" second, the named script as fallback) and carries **`/safety-net`'s proof date**.
 
-- Until Part 2's drill runs, label it honestly on the card: **`way back: proven by /safety-net <date> — emergency drill happens in Part 2`.** Never fake a `rehearsed` stamp. (Part 2a upgrades this line to `rehearsed: <date>`.)
+- Until Part 2's drill runs, label it honestly on the card: **`way back: proven by /safety-net <date> — emergency drill happens in Part 2`.** Never fake a `rehearsed` stamp. (Part 2a upgrades this line to `rehearsed: <date>`.) **This is NOT a scary ⚠ on the one line the builder is betting their night on — frame it as tested, because it is:** "proven by /safety-net" means the way back *was already tested* when you built your safety net (the restore test). The Part-2 drill only rehearses it *in the emergency shape* so you've felt it work. Say "tested, and we'll rehearse it once more," never "untested." (The permanent `⚠ not yet rehearsed` label is reserved for the classes that genuinely can't be drilled — host outage, third-party outage, silent data corruption — not for the everyday way-back.)
 - Classes that can't be safely drilled at all (host outage, third-party outage, silent data corruption) stay marked `⚠ not yet rehearsed` permanently — that's honesty, not a gap.
 
 ### Step 1.4 — The two messages + a channel that survives the app being down

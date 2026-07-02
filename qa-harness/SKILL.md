@@ -38,7 +38,7 @@ So **step zero of every run** is to confirm both exist. Read `staging.md`:
 - **No `staging.md`, or `must_not_break_list: none`** → the builder never captured their critical flows. **Route to `/ship-change` first** — that's where the list gets named: *"Before we can build checks, we need to know what they're checking — the few things in your app that must never break. That's the first thing `/ship-change` captures. Let's run it once, then come straight back here."*
 - **`local_sandbox: not-yet`** → the list exists but there's no practice copy to prove a check against. **This is the easy gap to miss.** A builder can have run `/safety-net` and named their flows in `/ship-change` without ever doing a back-of-house change — so the sandbox was never stood up. Don't rebuild the sandbox here; **route back into `/ship-change`'s first-back-of-house standup** (the part that installs the local database copy and proves the integration guards), then return: *"To prove a check actually catches a break, we need the private practice copy of your app running — the one `/ship-change` sets up the first time you change something back-of-house. Let's stand that up there, then come back and build your checks."*
 
-If both are in place (`must_not_break_list` points at a real file **and** `local_sandbox: up`), read `staging.md`, `stack.md`, and `readiness-check.md`, and carry on.
+If both are in place (`must_not_break_list` points at a real file **and** `local_sandbox: up`), read `staging.md`, `stack.md`, and `readiness-check.md` — and, for the incident intake in Step 0.4, `emergency-plan.md`, `versions.md`, and `go-live-check.md` if they exist — and carry on.
 
 **`/safety-net` and `/readiness-check` are soft prerequisites — recommend, don't block.** While reading the artifacts, glance at `safety-net.md`'s `## Still open` ledger; if it carries a 🔴 item (a forge-able login secret, an unrotated key), **surface it before building checks** — *"heads up, your safety net still has one red item open from setup; worth closing before we harden further."* If `readiness-check.md` is missing, a one-line nudge to run the front door is fine. Neither blocks — the hard floor is `/ship-change`'s (the list + the sandbox), which you just confirmed.
 
@@ -166,6 +166,16 @@ You already confirmed the prerequisites (the list + `local_sandbox: up`). Now, *
 
 If `stack.md` has no operating-mode note (an older run), figure out the realistic state with the builder here — but the front door is where this normally lives.
 
+## Step 0.4 — Fold in the breaks already waiting to become checks (the incident intake)
+
+Before you show the builder the list of flows, **pick up the incidents the rest of the kit has been quietly saving for you.** When a real outage happens, `/emergency-plan` writes a `regression-wanted:` line ("this exact break should become a permanent check so it can't silently return"); `/release` does the same for anything that broke and was fixed since the last version; and `/go-live-check` does it for a money-path or showstopper it caught failing. Those lines sit in the repo waiting for exactly this skill — **and until this step existed, nothing read them, so "every incident becomes a test" was a promise with no catch.** This step is the catch.
+
+- **Scan for open `regression-wanted:` lines** in `emergency-plan.md` (its blameless run-history / incident→test section), `versions.md` (breaks `/release` noted, or a logged rollback entry), and `go-live-check.md` (a transaction-integrity / showstopper FAIL it flagged to become a permanent check). Skip any already marked `regression-covered:`. If none of those files exists yet (no emergency plan, no releases, no go-live check), there's nothing to intake — move on silently, don't mention it.
+- **Present each one in plain English, as a flow worth watching:** *"Back on June 22 your app had a break — [what broke, from the record]. Want me to turn that into a permanent check now, so if it ever comes back it goes red the instant it does? That's the whole 'every incident becomes a test' idea."*
+- **Anything the builder says yes to becomes a flow on the list** — add it to the must-not-break list in `staging.md` (the single source of truth) so it shows up in the Step 0.5 menu and gets built and proven like any other flow.
+- **When that flow's check is later proven (Step 3) and logged (Step 4), flip its source line** from `regression-wanted:` to `regression-covered: <date>` in whichever file it came from — closing the loop the way `/emergency-plan`, `/release`, and `/go-live-check` promise happens "here," so it's traceable and the next run doesn't re-offer a break you already covered.
+- **If the builder defers one,** leave its `regression-wanted:` line open — it'll be re-offered next run. Don't delete it; an un-built regression is a tripwire, not a closed item.
+
 ## Step 0.5 — Show the whole list first, and ask what's missing (don't dive straight into test #1)
 
 **Do not jump into building the first check.** Diving into "okay, let's test the buy button…" without first laying out the *whole* plan is a real, called-out failure — it leaves the builder with no idea how many checks are coming, no chance to weigh in, and no prompt to remember the flow that matters most to *them* but never made the original list. So before Step 1 on the first flow, **lay out the full menu and invite additions:**
@@ -240,6 +250,8 @@ When both go red on cue and green again after, **stamp the check "proven to catc
 
 Record in `qa-harness.md`: the flow passed (green against the real seeded state), its testability class, that an automated check now exists, and the proven-on date. This is the per-flow row downstream skills read.
 
+**If this flow came from the incident intake (Step 0.4), close the loop now:** flip its source line from `regression-wanted:` to `regression-covered: <date>` in whichever file it came from (`emergency-plan.md`, `versions.md`, or `go-live-check.md`), and record the `regression-covered:` stamp on this flow's row in `qa-harness.md` too — so the break that once happened is now provably guarded, and traceable back to the night it happened.
+
 ## Step 5 — Wire it into the `/ship-change` loop, and set the re-prove trigger
 
 A check that only runs when someone remembers it is barely better than the manual re-walk it replaces. So the deliverable isn't the check — it's the check **running automatically on every change.** Two wirings:
@@ -312,8 +324,9 @@ A real run dragged on and the builder rightly called it unacceptable — but the
   - whether an automated check exists, and a **pass/fail log**;
   - the **"proven to catch a break on `<date>`"** stamp;
   - the **re-prove-due trigger.**
+  - for a flow that came from a real incident, the **`regression-covered: <date>`** stamp linking it back to the break it now guards against.
   - It is **regenerated from the plain-English must-not-break list in `staging.md`, never edited independently** — that list stays the single source of truth.
-- `/emergency-plan` reads `qa-harness.md` (every real outage becomes a new check here, so that exact failure can never silently return); `/release` reads it (this is the test gate `/release` runs).
+- **The incident→test loop is closed here.** `/emergency-plan` (after a real outage), `/release` (for anything that broke since the last version), and `/go-live-check` (a money-path / showstopper FAIL) write `regression-wanted:` lines into `emergency-plan.md`, `versions.md`, and `go-live-check.md`; **this skill's Step 0.4 intake reads them, builds the check, and flips each line to `regression-covered: <date>`** — so "every real outage becomes a permanent check" is literally traceable, not a hope. (The reverse direction also holds: `/emergency-plan` reads `qa-harness.md` for the must-not-break flows its card is built from, and `/release` runs these checks as its release gate.)
 
 Close in the builder's words: *"Your critical flows are now watched automatically. Each check has been shown catching a real break — you saw it go red — so a green isn't just hopeful, it's proven. From now on these run by themselves every time you change something, before anything goes live. You'll only hear from them when something's actually wrong."*
 

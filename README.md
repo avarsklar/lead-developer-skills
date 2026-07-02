@@ -20,6 +20,8 @@ You don't become a developer. You become the person who approves each step. The 
 | Gate 3 | `/release` | Release day, seatbelts on: put a parked feature live, proven and bookmarked. |
 | Gate 3 | `/handoff` | Prove someone else could keep it running without you. |
 
+**Gate 0** isn't in the table because it has no skill — it's simply the starting line: a working app with **no net under it yet**, where most just-shipped apps begin. It's never a grade or a zero-score; `/readiness-check` names where you are and points you at the first rung.
+
 You climb the gates **in order** — each skill needs the ground the one before it laid. Most builders need Gate 1 and stop there; you climb higher only when a higher gate's fear becomes actually yours.
 
 ## Install (Claude Code)

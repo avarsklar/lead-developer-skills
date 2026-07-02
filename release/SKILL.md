@@ -132,8 +132,8 @@ The feature was built days ago, off to the side, against an *earlier* version of
 **This is the go-live moment — the parked feature reaches real users now.** It happens only on the builder's explicit okay, and then *you* run it.
 
 1. **Name the irreversible moment:** *"Everything so far was safe — your feature was still parked. This is the step that actually puts it live for your real users. Can I flip it on?"*
-2. **On their yes, you flip it on** — merge the caught-up feature into `main` (which auto-deploys), or merge + promote on a manual stack. Never a command you hand them.
-3. **Confirm prod is actually serving the new feature before you bookmark it.** A failed, paused, or rolled-back deploy can leave the live site running an *older* commit, so a bookmark cut at `main`'s HEAD would point at code your users never ran. Mirror `/ship-change`'s prod-check: walk the builder to their deploy dashboard, read the commit prod is serving, confirm it matches `main`. **If prod is behind, STOP — don't bless until the mismatch is resolved.**
+2. **On their yes, you flip it on** — merge the caught-up feature into the **production branch** (`stack.md`'s `deployed_branch:`, usually `main` but read it — some hosts deploy `production` / `release`), which auto-deploys, or merge + promote on a manual stack. Never a command you hand them.
+3. **Confirm prod is actually serving the new feature before you bookmark it.** A failed, paused, or rolled-back deploy can leave the live site running an *older* commit, so a bookmark cut at the production branch's HEAD would point at code your users never ran. Mirror `/ship-change`'s prod-check: walk the builder to their deploy dashboard, read the commit prod is serving, confirm it matches the **production branch** (`stack.md`'s `deployed_branch:`, usually `main` but read it). **If prod is behind, STOP — don't bless until the mismatch is resolved.**
 4. **Take the real look (a look, not just the test).** The checks prove the *tested* flows; now the builder looks at the **actual live app** the way a real user would — finds the new feature, uses it, and walks the must-not-break list once on production. The checks can't catch a deploy that silently broke something the suite doesn't cover. Don't bless until the real look is clean too.
 
 > **If the live look is broken**, that's the post-publish rollback moment, not a panic: the way back is `/safety-net`'s tested rollback ladder aimed at the **last good bookmark** (the previous release, or the last `versions.md` restore point). Say it out loud and use it. (If the break was a migration, code-rollback alone isn't enough — restore-from-backup is the data path; `/ship-change`'s migration fork.)
@@ -166,7 +166,7 @@ Turn what went out into the human record:
 
 - **Check the durable intakes first:** any `regression-wanted:` line `/emergency-plan` recorded from a real bad night, and any **rollback entries in `versions.md`** (a logged rollback *is* evidence something broke). Present those back: *"Your version log shows you rolled back on June 22 — want that turned into a check so it can't silently come back?"*
 - **Then the catch-all, scoped to things already fixed:** *"Anything else that broke and is now fixed since your last release?"*
-- **Anything named → hand off to `/qa-harness`** to add a check *proven to catch that break*. Make it an honest choice, not a forced hour: *"We can build that check now, or I note it down (`regression-wanted:`) and we do it next time."*
+- **Anything named → hand off to `/qa-harness`** to add a check *proven to catch that break*. Make it an honest choice, not a forced hour: *"We can build that check now, or I note it down and we do it next time."* If they defer, **write the `regression-wanted:` line into `versions.md`** (next to the change/rollback log) — that's exactly where `/qa-harness`'s Step 0.4 intake looks for it, so a deferred check is a tripwire it picks up next run, not a dropped promise.
 - **If a named break is still live right now** (not fixed), that's not a quiet handoff — it's a fix-now: route it to `/ship-change` today, and the bookmark you just cut may need revisiting. Don't fold a live break into "history."
 - Nothing broke → say so and move on. Don't manufacture an incident.
 
@@ -187,7 +187,7 @@ Reprint a plain-English board each update: saw what's parked · caught up · che
 - **A known-good bookmark** (a dated git tag) the builder can name and return to in one step via `/safety-net`'s rollback ladder.
 - **A `CHANGELOG.md` entry** (committed) — dated, latest-first, New/Changed/Fixed, in plain language the builder okayed. Created here if `/release-foundation` never did.
 - **An updated `future-releases.md`** — today's feature(s) marked shipped, anything not ready rolled to the next date.
-- **(If anything broke since last release:)** a `regression-wanted:` handoff to `/qa-harness` so it becomes a permanent check.
+- **(If anything broke since last release:)** a `regression-wanted:` line recorded in `versions.md` (a handoff to `/qa-harness`'s intake) so it becomes a permanent check — flipped to `regression-covered:` once the check is built.
 
 Close in the builder's words, state-aware:
 

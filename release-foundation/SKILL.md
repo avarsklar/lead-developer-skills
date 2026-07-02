@@ -130,7 +130,7 @@ Don't ask for an abstract policy — offer the plain choices and land on an actu
 
 > *"How often do you want to put out new features? Most people pick one of these: **every week**, **every 2 weeks**, or **every month**. (You can also pick your own.) There's no right answer — more often means smaller releases, less often means bigger ones. What feels like you?"*
 
-Then **anchor it to a real, repeating day** so the chart has true dates, not vibes: *"Let's say every 2 weeks, on a Friday. Fridays good, or another day?"* **Fetch today's real date** (don't infer it) and compute the next two or three release dates from the cadence. Read it back: *"So your release days are Fri Jul 4, Fri Jul 18, Fri Aug 1 — every two weeks."*
+Then **anchor it to a real, repeating day *and a time*** so the chart has true dates and the reminder has a real moment to fire — not vibes: *"Let's say every 2 weeks, on a Friday. Fridays good, or another day? And what time of day should your release-day reminder reach you — morning, end of day, or a specific time like 9am? (That's just when I nudge you, not a deadline — release day is still whenever you actually sit down to do it.)"* **Fetch today's real date** (don't infer it) and compute the next two or three release dates from the cadence. Read it back with the time: *"So your release days are Fri Jul 4, Fri Jul 18, Fri Aug 1 — every two weeks — and I'll remind you at 9am each of those mornings."*
 
 - Keep it light: this is a *default they can change anytime*, not a contract. Say so.
 - If they're unsure, **every 2 weeks** is a sane, common default — offer it as the gentle suggestion, don't impose it.
@@ -166,14 +166,22 @@ Create **`future-releases.md`** — the plain plan of what's coming and when. Th
 
 ## Step 5 — Set the release-day reminder
 
-A schedule only works if release day actually arrives in front of them. Offer a recurring nudge via `/schedule`:
+A schedule only works if release day actually arrives in front of them — at a real time, in a place they'll actually see it. You captured the **day + time** in Step 3; now wire the reminder, and **let them pick where it lives:**
 
-> *"Want a gentle reminder on release day? On each release date it'll ping you with what's lined up — 'It's release day, here's what's parked for today, want to put it out?' — so you never miss it, and you're never scrambling."*
+> *"Want a gentle reminder on release day? On each release date, at the time you picked, it'll nudge you with what's lined up — 'It's release day, here's what's parked for today, want to put it out?' — so you never miss it and never scramble. Where would you like it to reach you?"*
 
-Three guardrails:
+**Offer the destinations plainly — lead with the calendar, because it's the one most builders already live in:**
+
+- **① On your calendar (Google Calendar / Apple Calendar / Outlook) — the friendly default.** It shows up right next to everything else you already check. I set up a **recurring event on your release day + time** that repeats every [cadence], with a note that says "run `/release` — here's what's parked." **If I can add it to your calendar directly, I will; otherwise I hand you a one-click calendar file (an `.ics`)** that drops the recurring reminder straight into Google Calendar, Apple Calendar, or Outlook — you just open it once and it's in. *(The `.ics` is the universal path — it works on every calendar without connecting any accounts; use it whenever you can't add to their calendar directly.)*
+- **② A cloud reminder via `/schedule`** — fires even when no session is open, and can read your chart to name the actual lineup ("Furniture is ready — want to run `/release`?"). Best if you want the nudge itself to tell you what's parked.
+- **③ A simple interval nudge via `/loop`** — the plainest option, if you just want a recurring poke.
+
+They can pick one or more. For a non-technical builder the **calendar event is the natural default** — it lands where they already look, needs nothing running, and survives closing every app. Set the event/reminder for the **exact day + time** from Step 3.
+
+Three guardrails, whichever they pick:
 - **It carries the actual lineup**, read from the chart (*"It's Friday — Furniture is parked and ready — want to run `/release`?"*), never a bare "remember to release."
 - **It nudges a human beat, never an automated release.** Releases need the real look and the okay — the reminder gets the builder to *run* `/release`, it never ships anything by itself. Say that plainly.
-- **Offer one-step teardown up front and make it findable later** — record the routine's id as `release_reminder:` in the marker, and treat the re-run health-check's "your schedule slipped" moment as the natural place to *offer* killing or changing it. Don't try to *prove* a recurring reminder in-session (you can't watch a Friday fire on a Tuesday).
+- **Offer one-step teardown up front and make it findable later** — record what you set up in the marker: `release_reminder:` carries the `/schedule` routine id, or `calendar` (plus the recurring event / `.ics` you created), or `loop`. Treat the re-run health-check's "your schedule slipped" moment as the natural place to *offer* killing or changing it (a calendar event is deleted from the calendar; a `/schedule` routine via its own teardown). Don't try to *prove* a recurring reminder in-session (you can't watch a Friday fire on a Tuesday).
 
 If they decline, that's fine — the chart and the schedule still stand. Don't oversell it.
 
@@ -232,7 +240,7 @@ Reprint a plain-English board every update (right-sized — this is a *light* se
 
 ## Step 10 — Write the marker `release-foundation.md`
 
-Record `cadence: <weekly|2-weekly|monthly|custom>`, `release_day: <day>`, `next_release_dates: [...]`, `chart: future-releases.md`, `release_reminder: <routine-id|none>`, `first_park_done: yes|deferred`, the everyday-tool detected, and the real date (fetch it). Commit it by name (Step 7 box). This is the marker `/release` and `/handoff` read.
+Record `cadence: <weekly|2-weekly|monthly|custom>`, `release_day: <day>`, `reminder_time: <time>`, `next_release_dates: [...]`, `chart: future-releases.md`, `release_reminder: <schedule-routine-id | calendar | loop | none>`, `first_park_done: yes|deferred`, the everyday-tool detected, and the real date (fetch it). Commit it by name (Step 7 box). This is the marker `/release` and `/handoff` read.
 
 > **🟠 On an auto-deploy stack, committing these files IS a publish — gate it, and don't assume a preview-branch world raw stacks don't have.** Detect the deploy model from `stack.md`.
 > - **If the stack has branch/preview isolation** (a Vercel/Netlify setup where non-`main` branches don't deploy): land `future-releases.md` / `CHANGELOG.md` / `release-foundation.md` on a non-deploying branch or CI-ignored path, then get the okay before anything reaches `main`.
@@ -242,7 +250,7 @@ Record `cadence: <weekly|2-weekly|monthly|custom>`, `release_day: <day>`, `next_
 ## Step 11 — Closing pointers
 
 - **Point at `/release` for release day.** *"That's your schedule set. When a release date comes — or whenever you've got a feature parked and ready — run `/release`: it catches the feature up to your live app, runs your safety checks, puts it live, saves a known-good bookmark, and writes the what-changed line. Every release, the same boring way, seatbelts on."* **Before pointing them there, check for `qa-harness.md`:** `/release` runs your automated safety checks, so it requires `/qa-harness` first. Missing → name `/qa-harness` as the one-time setup that comes before `/release`, so they don't hit a refusal they won't understand.
-- **Name `/handoff` and `/emergency-plan` as readers** of these files (both built).
+- **Name `/handoff` as the reader** of your **changelog** — it bundles `CHANGELOG.md` into the handoff packet. (It reads the changelog, not the forward-looking chart; `future-releases.md` is read by `/release` and this skill, not `/handoff`.) Don't claim `/emergency-plan` reads your chart or changelog — it doesn't; it reads your safety-net + go-live nets, not your release files. (Both skills are built.)
 
 Whichever case, the last thing they read is a clear single pointer — never a trailing list.
 
@@ -253,7 +261,7 @@ Whichever case, the last thing they read is a clear single pointer — never a t
 - **A release schedule** — a cadence (every week / 2 weeks / month) anchored to a real, repeating day, in the builder's own choice. The headline.
 - **`future-releases.md`** (committed) — "your Future Releases chart": what's coming, by date, each feature tagged *idea · building · parked · shipped*, with a "Someday" bucket for the unscheduled. Forward-looking; merged with any pre-existing to-do list.
 - **The fix-now-vs-feature sorter** — in the builder's own schedule: written into the everyday AI's memory (`CLAUDE.md` / `.cursorrules` / `AGENTS.md`) as a prompt that sorts (break → now via `/ship-change`; new feature → onto the chart, parked) and always yields, co-located with `/ship-change`'s (and any `/qa-harness`) standing rule.
-- **A release-day reminder** (if they wanted it) via `/schedule`, carrying the actual lineup, teardown named up front.
+- **A release-day reminder** (if they wanted it), on the builder's release day **+ chosen time** — a recurring **calendar event** (Google / Apple / Outlook, added directly or via a one-click `.ics`), or a `/schedule` cloud reminder carrying the actual lineup, or a `/loop` nudge — teardown named up front.
 - **`CHANGELOG.md`** (committed) — "your running what-changed list": dated, latest-first, the plain-English projection of `versions.md`. `/release-foundation` *creates* it; `/release` *appends*. Either skill that finds an existing one adopts and appends — never recreates.
 - **`release-foundation.md`** (committed) — the marker: cadence, release day, next dates, chart path, reminder id, `first_park_done`, everyday-tool, dated.
 - **A clean, committed tree** — this skill's own files saved by name, nothing dangling, no sandbox-only override swept in.
@@ -275,6 +283,6 @@ Close in the builder's words — reassurance, then state-aware:
 - **No reminder mechanism is *built* here** — the release-day reminder is handed to `/schedule`.
 - **Dates, not SemVer.** Date each release (or simple v1/v2/v3). SemVer is at most a one-line mental model, never required; no Conventional Commits, no CI. The builder hears exactly *"we'll just date each release."*
 - **The builder's own words, including their dates, are theirs.** The "no clocks" rule bans *you* imposing a quota or a deadline; it does **not** ban the builder's own "I want this out by the 14th."
-- **Resist Notion / SaaS hard.** The chart and changelog stay in the repo so the AI-memory rule can reference them and `/handoff` can bundle them; honor an existing Notion habit only with a thin repo-side pointer. Never recommend SaaS.
+- **Resist Notion / SaaS hard.** The chart and changelog stay in the repo so the AI-memory rule can reference them and `/handoff` can bundle the changelog; honor an existing Notion habit only with a thin repo-side pointer. Never recommend SaaS.
 - **No grades, no feature counts, no imposed quota, no cost/dollar/free-tier figures.** The cadence is the builder's choice, never a target you set.
 - **`/readiness-check` owns the "should they even do this?" gate** — small-by-choice builders are pruned there. This skill keeps only the light direct-invocation intent check (Step 1).

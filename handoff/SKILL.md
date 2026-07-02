@@ -76,7 +76,7 @@ This guardrail is **restated in force at the point of action inside Step 2**, be
 
 **Re-surface 🔴 active exploits BEFORE building the binder.** Read `safety-net.md`'s `## Still open` ledger and re-surface any 🔴 active-exploit **loudly, first** — you cannot honestly hand off an app with a live unfixed hole. Route the fix first (`/ship-change` or the named rotation), then build.
 
-(The **password manager already exists** by handoff time — `/safety-net` set it up early; `/readiness-check` only flags absence. Here it's simply the tool you reach for when a secret must move.)
+(The **password manager already exists** by handoff time — `/safety-net` sets it up at the floor, during its secrets step. Here it's simply the tool you reach for when a secret must move.)
 
 ## Fresh run vs. return trip — figure out which before you frame anything
 
@@ -177,7 +177,7 @@ Enumerate the usual roster: **host, database, domain registrar, DNS, payment pro
 **(b) The account CARD — exact fields, each in plain English:**
 1. **WHAT IT'S FOR** — one sentence in the builder's words ("Stripe — takes the payments"; "Vercel — runs the website"; "Namecheap — owns your web address").
 2. **WHO OWNS IT** — whose name/email the account is under; **flag the danger case** (a personal Gmail nobody else can reach).
-3. **WHERE THE LOGIN LIVES** — the dashboard URL to sign in + which email/identity it's under + where the password is kept ("in your 1Password, item Stripe"). **NEVER the password value** (map-not-vault).
+3. **WHERE THE LOGIN LIVES** — the dashboard URL to sign in + which email/identity it's under + where the password is kept ("in your 1Password, item Stripe"). **NEVER the password value** (map-not-vault). **And confirm the pointed-at spot is actually *populated*, not just named:** have the builder open that password-manager item (or wherever you're pointing) and confirm *there's a value in it* — **without reading it to you** (map-not-vault holds: "yes, it's there" is all you need, never the characters). A pointer at an **empty or half-filled** item is a **map to a locked box with no key** — flag it as a HOLE (treat it exactly like a cold-read hole) and don't let the packet be called complete until every pointed-at credential is confirmed to exist where the map says. This is the gap between *"the sign-in page opens"* and *"the successor can actually get in."*
 4. **WHAT DIES IF IT LAPSES** — what stops working, in plain words ("if this lapses, payments stop"; "if this lapses, the whole site goes dark").
 5. **IS IT ABOUT TO LAPSE** — the time-bomb line (see (d)).
 
@@ -238,7 +238,7 @@ The most novel page. Write it in **second person, to a brand-new operator** — 
 - **THE HOLE MECHANIC:** every single spot the reader gets stuck — a login location that doesn't resolve, a step that assumes knowledge not on the page, a missing "who owns this" — is a **HOLE.** Patch the packet at that exact spot, then **REPEAT** the cold-read until it carries someone all the way through cold.
 - **The builder is the witness:** the holes are real because someone actually got stuck; the pass is real because the task actually completed from the packet alone — not your say-so. **Guard against cold-read theater:** a self-graded "carries cold: yes" using knowledge you already have is the failure that guts this skill, exactly like `/release` blessing a red check.
 - **THE FREE WIN on the accounts page:** for the accounts page the proof basically IS the test of the inventory — going down the Step-2 list to confirm each login is reachable from what's written is not a second chore bolted on, it's the same walk.
-- **Map-not-vault holds during the proof:** "reachable" = the reader got to the login screen / the right dashboard from the written location, NOT that they read or used a secret value. The secrets guardrail binds the cold-reader too.
+- **Map-not-vault holds during the proof:** "reachable" = the reader got to the login screen / the right dashboard from the written location, NOT that they read or used a secret value. The secrets guardrail binds the cold-reader too. **But for the accounts page, "reachable" is two things, not one:** (a) the sign-in page opens *and* (b) the credential the map points at is actually *there* — the mapped password-manager item holds a value (confirmed populated in Step 2, never read aloud). A login page that opens over an **empty vault item** is NOT reachable — it's the locked-box-with-no-key hole; patch it (fill the item, or fix the pointer) before "carries cold: yes."
 - **Record the result in `handoff.md`:** date, which task, holes found + patched, "carries cold: yes/no," builder-confirmed.
 - **Un-testable parts** (a real outage you can't safely cause) are **labeled honestly, never faked** — the same honesty as `/emergency-plan`'s ⚠ not-yet-rehearsed classes.
 
@@ -315,7 +315,7 @@ Runs on **BOTH paths** (a confidential binder is useful to a future operator eve
 
 **Close in the builder's words, state-aware — and there is NO next-skill pointer; this is the end of the road:**
 
-- **Peace-of-mind path:** *"Your app no longer lives only in your head. There's one place that says where everything is, what it does, how to publish and how to undo, and what to do the night it breaks — and we PROVED someone could actually use it, because someone cold just did. You're still fully in control, and nothing here ever locked you out. You never have to be the single point of failure again."*
+- **Peace-of-mind path:** *"Your app no longer lives only in your head. There's one place that says where everything is, what it does, how to publish and how to undo, and what to do the night it breaks — and we PROVED someone could actually follow it, because someone cold just did. You're still fully in control, and nothing here ever locked you out."* **Name the one honest limit rather than over-claiming "never a single point of failure again":** because nothing on this path rotated a key, you proved the *map* is complete and usable — **not** that a brand-new stranger could log in tonight. Proving a real *other person* can get in needs either a co-owner you already trust holding the keys now, or the actually-leaving path later (which rotates as it goes). So land the true, still-large win: *"You've gone from 'only I know how this works' to 'it's all written down, and someone reading it cold just proved they could follow it.' That's the single-point-of-failure risk cut way down — honestly and provably — even though the very last mile, a stranger logging in for the first time, waits for the day you actually hand it over."*
 - **Actually-leaving path:** *"...and control has moved cleanly to [new owner]: they're working from their own accounts, the keys you held were rotated and we watched the old ones get rejected, the web address moved with everything else, and nobody got locked out along the way."*
 - **The earned line, both paths:** *"You've climbed the whole ladder. Your app is an asset now, not a leash."*
 - **The only forward thing is the refresh:** *"The time-bomb watch is on guard, and we'll sit down again in [months] to keep the map true."*
