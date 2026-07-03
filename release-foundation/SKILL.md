@@ -27,6 +27,8 @@ Now that they're at Gate 3, work splits into three lanes, and the kit has a skil
 
 This is exactly how a real company splits it (features on a schedule; fixes on their own faster path; emergencies fastest of all). Reaching Gate 3 means you've earned the right to run it that way instead of treating every finished thing as urgent.
 
+> **🟢 When a change comes up mid-lesson, there are two everyday answers — say one of them.** Any time the builder says "oh, I also want to add/change/fix X," don't just start building it. Sort it out loud: **broken / can't wait → run `/ship-change` now** (it goes out the moment it's fixed, never waits for a date); **new feature → add it to your calendar** — put it on your Future Releases chart for the next release date and build it as a parked feature, and `/release` puts it out on the day. *"Is this something broken we should get out now, or a new feature? If it's new, I'll drop it on your chart for [next date] instead of building it this second."* ("Add it to your calendar" means the **chart** — the feature's home; only the release-day reminder literally lands on your calendar. And a true 2 a.m. emergency — a security hole, the app's down — breaks glass with `/emergency-plan`; that's the rare third lane.)
+
 ## How this differs from `/ship-change` (say it plainly if they ask)
 
 - **`/ship-change`** is the *mechanics* of changing your app safely, **one change at a time** — copy → preview → eyeball → publish (or **park**) → way back. You run it **every single time** you touch the app. It answers *"how do I change this without breaking it?"*

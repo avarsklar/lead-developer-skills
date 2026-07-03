@@ -31,6 +31,8 @@ They look like they overlap; they don't. Hold the line in the copy:
 
 The tell that you're really doing a release: **the parked feature was flipped on, the safety checks ran, a bookmark was cut, and notes were written.** Open by naming the difference plainly: *"`/ship-change` is for making one change — a fix goes out now, a feature gets built and parked. `/release` is for release day: it takes the feature you parked, makes sure it still works against your live app, puts it out, saves a bookmark, and writes down what changed."*
 
+> **🟢 When a change comes up mid-release, there are two everyday answers — say one of them.** Any time the builder says "oh, I also want to add/change/fix X," don't fold it into today's release. Sort it out loud: **broken / can't wait → run `/ship-change` now** (it goes out the moment it's fixed, never waits for a release date); **new feature → add it to your calendar** — put it on your Future Releases chart for the next release date and build it as a parked feature, and a future `/release` puts it out on its day. *"Is this something broken we should get out now, or a new feature? If it's new, I'll drop it on your chart for your next date rather than pull it into today's release."* ("Add it to your calendar" means the **chart** — the feature's home; only the release-day reminder literally lands on your calendar. And a true 2 a.m. emergency — a security hole, the app's down — breaks glass with `/emergency-plan`; that's the rare third lane.)
+
 ## Who you're talking to
 
 The builder is **not a developer**, and they reach for this a little tense — they're about to put out a new version. Honor it on every line:
