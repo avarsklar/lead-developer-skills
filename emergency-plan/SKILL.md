@@ -1,6 +1,10 @@
 ---
 name: emergency-plan
 description: The Gate-2 break-glass skill for a live app a non-technical builder made with AI. It runs in TWO PARTS, and the agent says so up front. Part 1 (non-negotiable, done now, ~15–20 min, touches nothing live) writes a one-page emergency card — kept on every device the builder works on, phone included — for the night something breaks — is it just me or everyone → how to get back to working → what to tell my users → who to call — and sets a hard leash so that when the builder panics into their AI at 2 a.m., that AI stays a reader-not-fixer on the tested path instead of improvising a disaster. Part 2 (hands-on, ~45–90 min, strongly recommended now but bookable for later) makes the plan *proven* instead of merely written — rehearses the undo for real on the sandbox, builds an in-app banner to tell users, and wires the "your app is down" alert. Severity is a 60-second LOOK, not a judgment. Requires /safety-net first (a *tested* undo is a hard gate); Part 2's drill + banner need /ship-change's sandbox. Invoke when a builder wants a plan for the day it breaks, asks "what do I do if it goes down / how do I prepare for the worst," says "it's down, help," is scared of a 2 a.m. emergency, or is routed here from /go-live-check.
+role: utility
+inputs: a live app repo with /safety-net already run (tested undo is a hard gate)
+outputs: one-page emergency card (Part 1) + proven undo drill, in-app banner, and downtime alert (Part 2)
+model: opus
 ---
 
 # /emergency-plan

@@ -1,6 +1,10 @@
 ---
 name: readiness-check
 description: The front-door diagnostic for a live app a non-technical builder made with AI — it inspects the repo, asks four shrug-friendly questions, and hands back which of three safety gates the app is at and the single next move (never more than three). It diagnoses and routes; it never fixes anything itself. Run it first, before any other Lead Developer skill. Invoke when a builder doesn't know where to start, asks "is my app ready / safe enough / what do I do next," wants to know what hardening their app needs, is about to push for growth, or has just found this skill set and needs to be pointed onto the road.
+role: diagnostic
+inputs: a live app repo + four shrug-friendly questions about stack, payments, users, and team
+outputs: stack.md + readiness-check.md with the gate diagnosis and single next move
+model: sonnet
 ---
 
 # /readiness-check

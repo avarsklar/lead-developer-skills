@@ -1,6 +1,10 @@
 ---
 name: release-foundation
 description: The Gate-3 "driving lesson" for a live app a non-technical builder made with AI — run ONCE to install a release SCHEDULE for new features. The headline is the calendar: you pick how often you put out new features (every week / 2 weeks / month), and it builds you a "Future Releases" chart — a simple plan of which feature goes out on which date. The big idea it teaches, in plain words: now that you can change your app safely, you're a bigger operation, so you stop shipping every new feature the second it's done — you put it in a holding pen and release it on a date. Bugs and breaks don't wait for the schedule (those go through /ship-change); emergencies break glass (/emergency-plan); only NEW FEATURES ride the release calendar. It also writes the fix-now-vs-can-wait line into your everyday AI's memory as the sorter that decides what's a fix-now versus what goes on the chart, and teaches the one rule that ends the panic: if a feature isn't ready by its date, it just catches the next release — no all-nighter. Plan for a real working session. Intent-gated (small-by-choice builders are pruned by /readiness-check and never sent here) AND live-gated — NOT for an app that isn't live to real strangers yet (still-private / just-you / few-friends apps are turned around to keep shipping freely with /ship-change; a release schedule is for when real strangers depend on what you put out). Requires /safety-net + /ship-change first. Invoke when a builder wants a release schedule or a release rhythm, wants to plan features onto dates / announce a feature for a date, asks how to stop shipping every feature the moment it's done, how to stop feeling chained to their app, how to get organized about what to build and when, or is routed here from /readiness-check at Gate 3.
+role: utility
+inputs: a live app with /safety-net and /ship-change already run + chosen release cadence (weekly/biweekly/monthly)
+outputs: Future Releases chart, fix-now-vs-feature sorter written into AI memory (run once per project)
+model: opus
 ---
 
 # /release-foundation

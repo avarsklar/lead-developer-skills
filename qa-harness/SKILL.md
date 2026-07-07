@@ -1,6 +1,10 @@
 ---
 name: qa-harness
 description: Turns each plain-English must-not-break flow a builder already named in /ship-change into an automated check that's been proven to catch a break — so "the buy button charges a card" stops being something they eyeball and hope, and becomes a check that goes red the instant it stops working, and runs without them remembering to. The AI drives the browser and writes the test code; the builder names the flow and watches it get proven. Plan for a real working session the first time — most flows go quick, but proving the buy-button/checkout flow is genuine work (about an hour); re-runs are short. A Gate-2 skill. Requires /ship-change to have run first (it needs the must-not-break list and the sandbox). Invoke when a builder wants real tests / a safety check / regression protection, asks "how do I know nothing broke," is tired of clicking through their app by hand every change, is hardening for real traffic, or wants their critical flows protected automatically.
+role: utility
+inputs: the must-not-break flow list from /ship-change + the sandbox URL
+outputs: automated browser tests proven to go red on break, wired into the change loop
+model: opus
 ---
 
 # /qa-harness

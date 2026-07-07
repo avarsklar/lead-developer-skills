@@ -1,6 +1,10 @@
 ---
 name: ship-change
 description: The guided safe-change loop for a live app a non-technical builder made with AI — branch, make the change, preview it on a private sandbox, eyeball it, publish only on their okay, with a one-command way back. On its first run it stands up that sandbox (the one `/safety-net` deferred). Once `/release-foundation` has set up a release schedule, the loop gains a fork: a fix-now is published as usual, but a new feature can be PARKED — built and proven on the sandbox, then held in its holding pen for a release date and put out later by `/release`, rather than published now; until a schedule exists, every change is treated as fix-now and published. Run it every time the builder wants to change anything in a live app, however small. Invoke when a builder wants to add a feature, fix a bug, change how their live app looks or works, "make a change without breaking it," is scared to touch something that's already live, or asks how to test a change before users see it. Requires `/safety-net` to have run first.
+role: gate
+inputs: a live app repo with /safety-net run + the change to make (feature or fix)
+outputs: change previewed on sandbox, published to live on explicit okay, one-command way back confirmed
+model: opus
 ---
 
 # /ship-change
@@ -347,6 +351,12 @@ Everything between here and the publish step is the same for both — so build t
 
 8. **Save a new working version — and log it in plain English.** Once it's live *and the prod re-walk passed*, tag a **new dated saved working version** (a fresh restore point) so the history of points-you-can-return-to grows with every change — last good is always one step back, not all the way to launch day. This is the point step 7's rollback reaches for next time. **Then append a line to the builder's version log (`versions.md`)** — the next number after whatever's currently on top — with the one-plain-sentence description of what you just shipped — so they have a human-readable history they can point at and say *"take me back to v3."* (First run: create `versions.md` and seed `v1` from `/safety-net`'s launch restore point before adding this one. See *"Keep a plain-English version log,"* below.)
 
+9. **Leave the safety net at least as strong as you found it — every change updates a check.** *(The verification-floor rule: a change isn't done until the net covers what it added. This is what stops the checks from rotting behind the app as it grows.)* Before you close the run:
+   - **If this change added a new must-not-break flow** (a new buy path, a new login route, a new "this must save" action), **add it to the must-not-break list in plain English** — and if `/qa-harness` is set up (`qa-harness.md` exists), route to it to build a *proven* check for the new flow before you call the change done. A new critical flow with no check is a new blind spot.
+   - **If this change altered a flow that already had a check**, step 4 already flagged it and re-proved it on the sandbox — just confirm that re-proof actually happened, so you never ship a change that quietly left an old check stale.
+   - **If there's no `/qa-harness` yet** (Gate 1), "update the check" simply means **keep the must-not-break *list* current** — the list *is* the check at this gate, and the next eyeball gate walks whatever's on it.
+   - Say it plainly so they see the net widen with their app: *"I also added [the new thing] to your must-not-break list, so it gets checked every single time from now on."*
+
 ## The migration fork (the dangerous exception — deliberately minimal in this release)
 
 Steps 1–7 assume the change is *code you can revert.* A schema or data migration is the exception: roll the **code** back and the migration **already mutated prod data** — the revert doesn't bring it back. Without this fork the loop *lies* in exactly the case where the stakes are highest (the builder "rolls back," it appears to work, the data damage persists). So it ships in this release, kept cheap and honest:
@@ -399,7 +409,7 @@ Two different things hide under "your sandbox" — separate them:
 - **A new dated saved working version** (restore point) in git — last good is always one step back.
 - **`versions.md`** (committed) — the plain-English version log: every published version as a numbered line (`v1`, `v2`, …) with a one-sentence description, so the builder can say *"take me back to v3."* Created on the first run (seeded with `v1` from `/safety-net`'s launch restore point), appended on every publish.
 - *(When a capability is first added:)* **`staging.md`** — the state marker recording which parts of the sandbox exist (local DB up?, data fill, integrations neutered) and where the must-not-break list lives; read at step zero of every run to decide what *this* change still needs.
-- *(First time captured:)* the **must-not-break list** — 3-to-5 plain-English critical flows, stored alongside `staging.md` and re-walked at every ship's eyeball gate.
+- *(First time captured:)* the **must-not-break list** — 3-to-5 plain-English critical flows, stored alongside `staging.md` and re-walked at every ship's eyeball gate. *(Kept current by step 9 — every change that adds a critical flow adds it here, and a proven check once `/qa-harness` exists, so the net grows with the app.)*
 - *(If it was a migration:)* a **fresh pre-migration backup**, recorded.
 - *(Written on the first run, then left in place forever:)* a **standing "all changes go through the sandbox" rule recorded in the project itself** — see below.
 
@@ -407,7 +417,7 @@ Two different things hide under "your sandbox" — separate them:
 
 The loop only protects the builder if they actually *use* it next time — and the failure mode is real: weeks later they (or an AI helping them) edit live code directly "just this once" because nothing in the project said not to. So on the **first run**, write a short, plain-English rule into the project's durable context — the repo's `CLAUDE.md` if one exists (so any future AI session reads it), and a line in `staging.md` the builder can see — that says, in their words:
 
-> *"Every change to this app — however small — goes through the safe-change loop: a separate copy, a preview on the private sandbox, an eyeball, then publish only on my okay. Never edit the live app directly."*
+> *"Every change to this app — however small — goes through the safe-change loop: a separate copy, a preview on the private sandbox, an eyeball, then publish only on my okay. Never edit the live app directly. And every change leaves the safety net at least as strong as it found it — a new must-not-break flow gets added to the list (and a proven check, once `/qa-harness` is set up)."*
 
 State it to the builder out loud once, too, as the takeaway: *"From now on, any time you want to change something — even a tiny tweak — come back here and we run this loop. Don't edit the live app directly, and don't let an AI do it either. The sandbox is the door every change goes through."* This is what turns one safe change into a safe *habit*.
 

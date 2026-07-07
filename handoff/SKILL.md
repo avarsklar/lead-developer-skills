@@ -1,6 +1,10 @@
 ---
 name: handoff
 description: The Gate-3 capstone for a live app a non-technical builder made with AI — it turns *you-are-the-documentation* into an asset someone else (or future-you) could run without ever calling you. Two reasons, peace-of-mind the default: (1) insure yourself so you're not the single point of failure — you STAY, it touches nothing live and never locks you out; (2) hand it to a real person who's taking over — a SEPARATE gated door that opens only when you say "I am handing this to a real person now." The centerpiece is the accounts inventory / treasure hunt — every service, who owns it, WHERE the login lives (never the password), and which lapses are time-bombs. It folds in how to publish, undo, and recover, writes a first-day guide for a brand-new operator, and PROVES the packet by cold-read — a memory-less reader runs one real task from it alone, and every stuck point is a hole patched until it carries someone who knows nothing. Outputs `handoff.md` committed (a MAP, not a vault), a derived confidential `handoff-packet.pdf` for a new owner with no repo access, two refresh reminders, and a `refreshed_on` stamp. Requires the ladder behind it; `/readiness-check` routes you here at the handoff gate. Invoke when a builder wants to hand their app to someone or step away, wants peace of mind that someone else could keep it alive, asks "what if I get hit by a bus / how do I not be the only one who can run this / how do I document everything / what happens if I disappear or go on leave," wants a contractor / co-founder / friend to take over, or is routed here from `/readiness-check` at the handoff gate.
+role: artifact-builder
+inputs: a live app repo with the full hardening ladder run + intent (peace-of-mind or real handoff)
+outputs: handoff.md committed, handoff-packet.pdf, two refresh reminders, and a refreshed_on stamp
+model: opus
 ---
 
 # /handoff

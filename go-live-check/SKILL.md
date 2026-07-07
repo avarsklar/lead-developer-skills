@@ -1,6 +1,10 @@
 ---
 name: go-live-check
 description: The Gate-2 launch-readiness audit for a live app a non-technical builder made with AI — it turns the abstract "go-live net" (error monitoring, uptime alerts, a security pass, transaction integrity) into a *proven* pass/fail against their real app: not "is it configured" but "make it fail on purpose and watch the net catch it." It stands up the nets that aren't there yet, proves each one by making it fire, renders a blunt go/no-go, and is built to re-run because monitors rot. Requires /safety-net to have run first; the money/auth-logic pillars need /ship-change's sandbox. Invoke when a builder is about to launch or push for growth, asks "is it safe for real strangers / real money," wants to know if they'll find out when something breaks, or is routed here from /readiness-check at the go-live gate.
+role: gate
+inputs: a live app repo with /safety-net already run + the app's real URL and stack
+outputs: blunt go/no-go verdict with proven pass/fail results for each net (error monitoring, uptime, security, transaction integrity)
+model: opus
 ---
 
 # /go-live-check

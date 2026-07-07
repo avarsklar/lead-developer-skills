@@ -1,6 +1,10 @@
 ---
 name: release
 description: The Gate-3 "release day" ceremony for a live app a non-technical builder made with AI — run on each release date (or whenever a parked feature is ready) to put your scheduled new features LIVE, seatbelts on. It reads your Future Releases chart, takes the feature(s) parked for today's date, catches each one up to your live app, re-runs your automated safety checks (/qa-harness) and watches them go green, has you take the real look, then flips the feature on — this IS the genuine go-live moment, because the feature was held in its holding pen until now. Then it saves a recoverable known-good bookmark (a version tag) and writes the plain what-changed list (release notes + changelog: New = the features you just flipped on, Fixed = bug fixes that already went out via /ship-change), and updates the chart — shipped features marked done, anything not ready rolled to the next date ("missed the train, catches the next one"). When a safety check goes RED it STOPS cold and refuses to bless the version (no flip-on, no bookmark, no notes) — that's the seatbelt WINNING — then offers to fix via /ship-change and come straight back. New features ride this; bugs/breaks don't wait for it (those go through /ship-change). Requires /safety-net (the tested way back) and /qa-harness (the checks ARE the seatbelts — no harness, it routes you there first). Live-gated — NOT for an app that isn't live to real strangers yet; a still-private / just-you / few-friends app is turned around to ship freely with /ship-change (release day is for when real strangers depend on what you put out). Invoke when it's release day, when a parked feature is ready to go out, when a builder wants to put out / cut / ship a release or a new version, asks how to release safely or keep a changelog of versions, or is routed here from /release-foundation as "how release day works."
+role: utility
+inputs: the Future Releases chart + parked feature(s) for today's date + a passing /qa-harness green run
+outputs: feature flipped live, version tag saved, release notes and changelog entry written, chart updated
+model: opus
 ---
 
 # /release

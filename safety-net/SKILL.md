@@ -1,6 +1,10 @@
 ---
 name: safety-net
 description: One-time setup of the floor under a live app a non-technical builder made with AI — clean git workflow with a forever restore point, secrets out of code, and automated, restore-tested backups. Run once per project, before any real changes go live. Invoke when a builder says they're scared to touch their app, scared of losing their work or data, wants to "make it safe before I change anything," asks how to back up / roll back / protect their app, or is about to start making changes to something already live. After it runs, the builder can't lose their work and can't lose their data — every change from there is recoverable.
+role: utility
+inputs: a live app repo (run once per project, before any changes go live)
+outputs: restore-tested git backup, secrets out of code, safety-net.md with the tested way back (run once)
+model: opus
 ---
 
 # /safety-net
