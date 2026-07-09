@@ -63,7 +63,7 @@ The builder is **not a developer**, and they reach for this a little tense — t
 
 3. **Always compare local to the remote before trusting any copy.** Run `git fetch`, then check whether local is behind origin (`git rev-list --left-right --count main...origin/main`, or `git status`). **If the copy you're in is behind the remote, STOP** — you cannot bless a version from a copy that isn't current. Switch to a current copy, or pull/clone fresh with the builder's okay. The GitHub remote is the source of truth.
 
-4. **Record the decision** — write `canonical_repo:`/`canonical_remote:` into `stack.md` if missing, commit silently. Never make the builder adjudicate which folder is real.
+4. **Record the decision** — write `canonical_repo:`/`canonical_remote:` into `stack.md` if missing, commit silently. Never make the builder adjudicate which folder is real. **The one thing you *don't* do silently:** if locking onto the live copy moved you out of the folder this session actually opened in, say so out loud — *"you opened this in X, but your live app is Y, so I'm working in Y; if you meant to be experimenting in a separate copy, tell me and I'll stay there."* That's not asking them to adjudicate which folder is real — it's just flagging the switch, so a builder who's *deliberately* working in a safe copy isn't silently moved onto their live app.
 
 ## Step 0 — The gates (the seatbelts are not optional) + find what's parked for today
 
